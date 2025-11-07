@@ -1,0 +1,41 @@
+/* styles.css */
+:root {
+    --bg: #0f1724;
+    --card: #0b1220;
+    --accent: #4f46e5;
+    --text: #e6eef8;
+  }
+  * { box-sizing: border-box; font-family: Inter, system-ui, Arial; }
+  body {
+    margin: 0; background: linear-gradient(180deg,#071028,#0b1220); color: var(--text);
+    min-height: 100vh;
+  }
+  header { padding: 16px 24px; text-align: center; }
+  h1 { margin: 0; font-size: 20px; }
+  .board { display: flex; gap: 16px; padding: 20px; max-width: 1100px; margin: 0 auto; }
+  .column {
+    background: rgba(255,255,255,0.03);
+    padding: 12px; border-radius: 8px; width: 33%;
+    display: flex; flex-direction: column; height: calc(100vh - 140px);
+  }
+  .column h2 { margin: 0 0 8px 0; font-size: 16px; }
+  .dropzone {
+    background: rgba(255,255,255,0.02);
+    flex: 1; padding: 8px; border-radius: 6px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .task {
+    background: #071428; padding: 10px; border-radius: 6px; cursor: grab;
+    border: 1px solid rgba(255,255,255,0.03);
+  }
+  .task.dragging {
+    opacity: 0.6; transform: scale(0.98);
+    border-color: var(--accent);
+    box-shadow: 0 6px 18px rgba(79,70,229,0.12);
+  }
+  .task-title { font-weight: 600; font-size: 14px; }
+  .task-desc { font-size: 12px; opacity: 0.8; margin-top: 6px; }
+  button { margin-top: 8px; padding: 8px; border-radius: 6px; background: var(--accent); color: white; border: none; cursor: pointer; }
+  button:active { transform: scale(0.99); }
+  .dropzone.over { outline: 2px dashed rgba(79,70,229,0.4); }
+  

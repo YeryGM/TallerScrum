@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kanban Realtime</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Kanban Realtime</h1>
+  </header>
+
+  <main class="board">
+    <div class="column" data-status="todo">
+      <h2>To Do</h2>
+      <div class="dropzone" id="col-todo"></div>
+      <button id="add-todo">+ Añadir</button>
+    </div>
+
+    <div class="column" data-status="doing">
+      <h2>Doing</h2>
+      <div class="dropzone" id="col-doing"></div>
+      <button id="add-doing">+ Añadir</button>
+    </div>
+
+    <div class="column" data-status="done">
+      <h2>Done</h2>
+      <div class="dropzone" id="col-done"></div>
+      <button id="add-done">+ Añadir</button>
+    </div>
+  </main>
+
+  <template id="task-template">
+    <div class="task" draggable="true">
+      <div class="task-title"></div>
+      <div class="task-desc"></div>
+    </div>
+  </template>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
