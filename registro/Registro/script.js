@@ -2,25 +2,26 @@ const form = document.getElementById("formRegistro");
 const mensaje = document.getElementById("mensaje");
 
 form.addEventListener("submit", (event) => {
-  event.preventDefault(); // Evita recargar la página
+  event.preventDefault(); // evita que la página se recargue
 
   const nombre = document.getElementById("nombre").value.trim();
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
   const confirmar = document.getElementById("confirmar").value.trim();
 
-  // Validaciones básicas
+  // ✅ Verificar que todos los campos estén llenos
   if (!nombre || !email || !password || !confirmar) {
     mostrarMensaje("❌ Por favor completa todos los campos.", "red");
     return;
   }
 
+  // ✅ Verificar que las contraseñas coincidan
   if (password !== confirmar) {
     mostrarMensaje("⚠️ Las contraseñas no coinciden.", "orange");
     return;
   }
 
-  // Aquí podrías enviar los datos al servidor (fetch o API)
+  // Si todo está correcto:
   mostrarMensaje(`✅ Usuario "${nombre}" registrado correctamente.`, "green");
   form.reset();
 });
