@@ -8,11 +8,11 @@ app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
 // Servir archivos estáticos desde la carpeta Registro (index.html, script.js, style.css)
-app.use(express.static(path.join(__dirname, 'Registro')));
+app.use(express.static(path.join(__dirname, 'Login')));
 
 // Responder GET / con el index.html para que http://localhost:3000/ muestre la página
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Registro', 'index.html'));
+  res.sendFile(path.join(__dirname, 'Login', 'index.html'));
 });
 
 // Escrbir en registro/Registro/usuarios.txt (relativo a esta carpeta)
