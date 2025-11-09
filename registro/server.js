@@ -21,11 +21,6 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'Login', 'index.html'));
 });
 
-// === Servir el tablero ===
-app.get('/tablero', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Login', 'tablero.html'));
-});
-
 // === Endpoint para guardar usuarios (de Registro) ===
 const filePath = path.join(__dirname, 'Registro', 'usuarios.txt');
 
