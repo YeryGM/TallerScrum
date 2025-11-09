@@ -7,15 +7,26 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
-// Servir archivos estáticos desde la carpeta Registro (index.html, script.js, style.css)
-app.use(express.static(path.join(__dirname, 'Login')));
+// === Servir archivos estáticos de ambas carpetas ===
+app.use('/login', express.static(path.join(__dirname, 'Login')));
+app.use('/registro', express.static(path.join(__dirname, 'Registro')));
 
-// Responder GET / con el index.html para que http://localhost:3000/ muestre la página
+// === Redirigir raíz "/" al login ===
 app.get('/', (req, res) => {
+  res.redirect('/login');
+});
+
+// === Servir la página principal del login ===
+app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'Login', 'index.html'));
 });
 
-// Escrbir en registro/Registro/usuarios.txt (relativo a esta carpeta)
+// === Servir el tablero ===
+app.get('/tablero', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Login', 'tablero.html'));
+});
+
+// === Endpoint para guardar usuarios (de Registro) ===
 const filePath = path.join(__dirname, 'Registro', 'usuarios.txt');
 
 function escapeCsv(s) {
@@ -48,4 +59,4 @@ app.post('/save-users', (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Registro server listening on http://localhost:${port}`));
+app.listen(port, () => console.log(`Servidor activo en http://localhost:${port}`));

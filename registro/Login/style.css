@@ -66,3 +66,17 @@ body {
     font-size: 0.9em;
     height: 18px;
 }
+
+.register-link {
+    margin-top: 20px;
+    font-size: 0.95em;
+}
+
+.register-link a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.register-link a:hover {
+    text-decoration: underline;
+}
