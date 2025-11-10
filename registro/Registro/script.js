@@ -2,7 +2,7 @@ const form = document.getElementById("formRegistro");
 let mensaje = document.getElementById("mensaje");
 
 form.addEventListener('submit', async (event) => {
-
+  event.preventDefault();
   const nombre = document.getElementById('nombre').value.trim();
   const email = document.getElementById('email').value.trim();
   const password = document.getElementById('password').value.trim();
@@ -20,7 +20,7 @@ form.addEventListener('submit', async (event) => {
     return;
   }
 
-
+  mostrarMensaje(`✅ Usuario "${nombre}" registrado correctamente.`, "green");
   form.reset();
 });
 

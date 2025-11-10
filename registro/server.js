@@ -13,6 +13,7 @@ app.use('/registro', express.static(path.join(__dirname, 'Registro')));
 
 // === Redirigir raíz "/" al login ===
 app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Registro', 'index.html'));
   res.redirect('/login');
 });
 
