@@ -10,23 +10,25 @@
   <header>
     <h1>Kanban Realtime</h1>
     <p>Sistema de Gestión de Tareas Ágil</p>
-    <button id="open-modal-btn" class="main-add-btn">✨ Crear Nueva Tarea</button>
   </header>
 
   <main class="board">
     <div class="column" data-status="todo">
       <h2>📝 To Do</h2>
       <div class="dropzone" id="col-todo"></div>
+      <button id="add-todo" class="add-btn">+ Añadir Tarea</button>
     </div>
 
     <div class="column" data-status="doing">
       <h2>⚡ Doing</h2>
       <div class="dropzone" id="col-doing"></div>
+      <button id="add-doing" class="add-btn">+ Añadir Tarea</button>
     </div>
 
     <div class="column" data-status="done">
       <h2>✅ Done</h2>
       <div class="dropzone" id="col-done"></div>
+      <button id="add-done" class="add-btn">+ Añadir Tarea</button>
     </div>
   </main>
 
@@ -42,35 +44,6 @@
       </div>
     </div>
   </template>
-
-  <!-- Modal para Crear Tarea -->
-  <div id="modal-overlay" class="modal-overlay hidden">
-    <div class="modal-content">
-      <h2>Nueva Tarea</h2>
-      <form id="task-form">
-        <div class="form-group">
-          <label for="task-title-input">Título</label>
-          <input type="text" id="task-title-input" placeholder="Ej: Diseñar la base de datos" required>
-        </div>
-        <div class="form-group">
-          <label for="task-desc-input">Descripción</label>
-          <textarea id="task-desc-input" rows="4" placeholder="Ej: Definir entidades, relaciones y tipos de datos..."></textarea>
-        </div>
-        <div class="form-group">
-          <label for="task-priority-input">Prioridad</label>
-          <select id="task-priority-input">
-            <option value="high">🔥 Alta</option>
-            <option value="medium" selected>⚡ Media</option>
-            <option value="low">💚 Baja</option>
-          </select>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="cancel-btn">Cancelar</button>
-          <button type="submit" class="save-btn">Guardar Tarea</button>
-        </div>
-      </form>
-    </div>
-  </div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/app.js"></script>

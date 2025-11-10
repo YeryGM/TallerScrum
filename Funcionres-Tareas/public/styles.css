@@ -147,144 +147,25 @@ header p {
   border-top: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Main Add Button in Header */
-.main-add-btn {
-  margin-top: 16px;
-  padding: 10px 20px;
-  border-radius: 8px;
-  background: var(--accent);
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 15px;
-  transition: all 0.2s ease;
-}
-
-.main-add-btn:hover {
-  background: #4338ca;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  opacity: 1;
-  transition: opacity 0.3s ease;
-}
-
-.modal-overlay.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.modal-content {
-  background: var(--card);
-  padding: 30px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 500px;
-  border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  transform: scale(1);
-  transition: transform 0.3s ease;
-}
-
-.modal-overlay.hidden .modal-content {
-  transform: scale(0.9);
-}
-
-.modal-content h2 {
-  margin-top: 0;
-  margin-bottom: 24px;
-  text-align: center;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
+.add-btn { 
+  margin-top: 16px; 
+  padding: 12px; 
+  border-radius: 8px; 
+  background: var(--accent); 
+  color: white; 
+  border: none; 
+  cursor: pointer; 
   font-weight: 500;
-  opacity: 0.9;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-  width: 100%;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.1);
-  background: #0f1724;
-  color: var(--text);
-  font-size: 14px;
-}
-
-.form-group textarea {
-  resize: vertical;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.form-actions button {
-  padding: 10px 20px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
   transition: all 0.2s ease;
 }
 
-.form-actions .cancel-btn {
-  background: rgba(255,255,255,0.1);
-  color: var(--text);
-}
-
-.form-actions .cancel-btn:hover {
-  background: rgba(255,255,255,0.2);
-}
-
-.form-actions .save-btn {
-  background: var(--accent);
-  color: white;
-}
-
-.form-actions .save-btn:hover {
+.add-btn:hover {
   background: #4338ca;
+  transform: translateY(-1px);
 }
 
-/* Animation */
-@keyframes fadeInScaleUp {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.modal-overlay:not(.hidden) .modal-content {
-  animation: fadeInScaleUp 0.3s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+.add-btn:active { 
+  transform: scale(0.98); 
 }
 
 /* Responsive */
