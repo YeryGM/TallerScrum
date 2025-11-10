@@ -206,3 +206,7 @@ $RECYCLE.BIN
 
 # End of httpswww.toptal.comdevelopersgitignoreapijava,visualstudiocode,intellij,maven,windows
 .msm
+
+# IDE
+.idea/
+*.iws
