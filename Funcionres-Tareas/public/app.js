@@ -1,5 +1,86 @@
-// app.js - Versión simplificada y funcional
+// app.js - Versión con modal para creación de tareas
 const socket = io();
+
+/**
+ * Clase para gestionar el formulario modal de creación de tareas.
+ * Sigue el patrón de diseño de Módulo, encapsulando toda la lógica del formulario.
+ */
+class TaskForm {
+    constructor(formId) {
+        this.formElement = document.getElementById(formId);
+        this.modalOverlay = this.formElement.closest('.modal-overlay');
+        
+        if (!this.formElement || !this.modalOverlay) {
+            throw new Error("No se encontraron los elementos del formulario o el modal.");
+        }
+
+        this.titleInput = this.formElement.querySelector('#task-title-input');
+        this.descInput = this.formElement.querySelector('#task-desc-input');
+        this.priorityInput = this.formElement.querySelector('#task-priority-input');
+
+        this._setupEventListeners();
+    }
+
+    _setupEventListeners() {
+        document.getElementById('open-modal-btn').addEventListener('click', () => this.open());
+        this.modalOverlay.addEventListener('click', (e) => {
+            if (e.target === this.modalOverlay) this.close();
+        });
+        this.formElement.querySelector('.cancel-btn').addEventListener('click', () => this.close());
+        this.formElement.addEventListener('submit', (e) => this._handleSave(e));
+    }
+
+    open() {
+        this.modalOverlay.classList.remove('hidden');
+        this.titleInput.focus();
+    }
+
+    close() {
+        this.modalOverlay.classList.add('hidden');
+        this.formElement.reset();
+    }
+
+    _validate() {
+        if (!this.titleInput.value.trim()) {
+            alert('El campo "Título" es obligatorio.');
+            this.titleInput.focus();
+            return false;
+        }
+        return true;
+    }
+
+    async _handleSave(e) {
+        e.preventDefault();
+        if (!this._validate()) return;
+
+        const taskData = {
+            title: this.titleInput.value.trim(),
+            description: this.descInput.value.trim(),
+            priority: this.priorityInput.value,
+            status: 'todo' // Las nuevas tareas siempre van a "To Do"
+        };
+
+        try {
+            const response = await fetch('/api/tasks', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(taskData)
+            });
+
+            if (response.ok) {
+                // El servidor emitirá 'task:created', y el listener se encargará de actualizar la UI.
+                this.close();
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Error en el servidor');
+            }
+        } catch (error) {
+            console.error('Error al crear la tarea:', error);
+            alert(`No se pudo crear la tarea: ${error.message}`);
+        }
+    }
+}
+
 
 class TaskBoard {
     constructor() {
@@ -59,7 +140,6 @@ class TaskBoard {
     }
 
     setupTaskEvents(taskElement, task) {
-        // Drag events
         taskElement.addEventListener('dragstart', (e) => {
             this.draggedTask = task;
             taskElement.classList.add('dragging');
@@ -71,12 +151,7 @@ class TaskBoard {
             this.draggedTask = null;
         });
 
-        // Edit on double click
-        taskElement.addEventListener('dblclick', () => {
-            this.editTask(task);
-        });
-
-        // Delete on right click
+        taskElement.addEventListener('dblclick', () => this.editTask(task));
         taskElement.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             if (confirm(`¿Eliminar "${task.title}"?`)) {
@@ -117,10 +192,10 @@ class TaskBoard {
         try {
             const response = await fetch(`/api/tasks/${taskId}`, { method: 'DELETE' });
             if (response.ok) {
-                this.tasks = this.tasks.filter(t => t.id !== taskId);
-                this.render();
+                // El evento 'task:deleted' actualizará el tablero
             }
-        } catch (error) {
+        } catch (error)
+ {
             console.error('Error al eliminar:', error);
             alert('Error al eliminar la tarea');
         }
@@ -130,8 +205,10 @@ class TaskBoard {
         const index = this.tasks.findIndex(t => t.id === updatedTask.id);
         if (index !== -1) {
             this.tasks[index] = updatedTask;
-            this.render();
+        } else {
+            this.tasks.push(updatedTask);
         }
+        this.render();
     }
 
     addTaskToBoard(newTask) {
@@ -148,19 +225,14 @@ class TaskBoard {
 // Inicialización y configuración
 const taskBoard = new TaskBoard();
 
-// Configurar dropzones
 function setupDropZones() {
-    const dropzones = document.querySelectorAll('.dropzone');
-    
-    dropzones.forEach(dropzone => {
+    document.querySelectorAll('.dropzone').forEach(dropzone => {
         dropzone.addEventListener('dragover', (e) => {
             e.preventDefault();
             dropzone.classList.add('drag-over');
         });
 
-        dropzone.addEventListener('dragleave', () => {
-            dropzone.classList.remove('drag-over');
-        });
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-over'));
 
         dropzone.addEventListener('drop', async (e) => {
             e.preventDefault();
@@ -172,92 +244,33 @@ function setupDropZones() {
             const newStatus = dropzone.parentElement.getAttribute('data-status');
             
             try {
-                // Actualizar en servidor
                 const response = await fetch(`/api/tasks/${taskId}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        status: newStatus 
-                    })
+                    body: JSON.stringify({ status: newStatus })
                 });
 
-                if (response.ok) {
-                    const updatedTask = await response.json();
-                    // Actualizar localmente
-                    const taskIndex = taskBoard.tasks.findIndex(t => t.id == taskId);
-                    if (taskIndex !== -1) {
-                        taskBoard.tasks[taskIndex].status = newStatus;
-                        taskBoard.render();
-                    }
-                } else {
-                    throw new Error('Error en la respuesta del servidor');
-                }
+                if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                
             } catch (error) {
                 console.error('Error al mover tarea:', error);
                 alert('Error al mover la tarea');
-                taskBoard.render(); // Revertir visualmente
+                taskBoard.render();
             }
         });
     });
 }
 
-// Configurar botones de añadir
-function setupAddButtons() {
-    document.getElementById('add-todo').addEventListener('click', () => addTask('todo'));
-    document.getElementById('add-doing').addEventListener('click', () => addTask('doing'));
-    document.getElementById('add-done').addEventListener('click', () => addTask('done'));
-}
-
-async function addTask(status) {
-    const title = prompt('Título de la tarea:');
-    if (!title) return;
-
-    const description = prompt('Descripción:') || '';
-    const priority = prompt('Prioridad (high/medium/low):', 'medium') || 'medium';
-
-    try {
-        const response = await fetch('/api/tasks', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                title: title.trim(),
-                description: description.trim(),
-                priority: priority.toLowerCase(),
-                status: status
-            })
-        });
-
-        if (response.ok) {
-            const newTask = await response.json();
-            taskBoard.addTaskToBoard(newTask);
-        }
-    } catch (error) {
-        console.error('Error al crear tarea:', error);
-        alert('Error al crear la tarea');
-    }
-}
-
 // Socket events
-socket.on('task:created', (task) => {
-    taskBoard.addTaskToBoard(task);
-});
-
-socket.on('task:updated', (task) => {
-    taskBoard.updateTaskInBoard(task);
-});
-
-socket.on('task:deleted', (taskId) => {
-    taskBoard.removeTaskFromBoard(taskId);
-});
-
-socket.on('tasks:reordered', (tasks) => {
-    taskBoard.setTasks(tasks);
-});
+socket.on('task:created', (task) => taskBoard.addTaskToBoard(task));
+socket.on('task:updated', (task) => taskBoard.updateTaskInBoard(task));
+socket.on('task:deleted', (taskId) => taskBoard.removeTaskFromBoard(taskId));
+socket.on('tasks:reordered', (tasks) => taskBoard.setTasks(tasks));
 
 // Inicializar
 document.addEventListener('DOMContentLoaded', async () => {
     setupDropZones();
-    setupAddButtons();
+    new TaskForm('task-form'); // Inicializa el manejador del formulario modal
 
     try {
         const response = await fetch('/api/tasks');
