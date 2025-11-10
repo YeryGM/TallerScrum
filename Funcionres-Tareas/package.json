@@ -1,0 +1,21 @@
+{
+    "name": "kanban-realtime",
+    "version": "1.0.0",
+    "description": "Tablero Kanban con drag-and-drop y actualizacion en tiempo real (Socket.IO + SQLite)",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js",
+        "init-db": "node init_db.js"
+    },
+    "dependencies": {
+        "body-parser": "^1.20.3",
+        "cors": "^2.8.5",
+        "express": "^4.21.2",
+        "socket.io": "^4.8.1",
+        "sqlite3": "^5.1.6"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs"
+}
