@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcrypt');
 
 const app = express();
 app.use(cors());
@@ -10,6 +11,10 @@ app.use(express.json({ limit: '2mb' }));
 // === Servir archivos estáticos de ambas carpetas ===
 app.use('/login', express.static(path.join(__dirname, 'Login')));
 app.use('/registro', express.static(path.join(__dirname, 'Registro')));
+app.get('/tablero', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Login', 'tablero.html'));
+});
+
 
 // === Redirigir raíz "/" al login ===
 app.get('/', (req, res) => {
@@ -51,8 +56,6 @@ app.post('/login', (req, res) => {
     }
   });
 });
-
-
 
 function escapeCsv(s) {
   if (s == null) return '';

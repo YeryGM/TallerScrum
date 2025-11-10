@@ -18,7 +18,7 @@ loginForm.addEventListener('submit', async function (e) {
 
     if (response.ok && data.ok) {
       // Login correcto → redirigir
-      window.location.href = 'tablero.html';
+      window.location.href = '/tablero';
     } else {
       errorMsg.textContent = data.error || "Email o contraseña incorrectos";
     }
