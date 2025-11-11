@@ -17,8 +17,8 @@ loginForm.addEventListener('submit', async function (e) {
     const data = await response.json();
 
     if (response.ok && data.ok) {
-      // Login correcto → redirigir
-      window.location.href = '/tablero';
+      // Login correcto → redirigir al Kanban
+      window.location.href = '/kanban';
     } else {
       errorMsg.textContent = data.error || "Email o contraseña incorrectos";
     }
