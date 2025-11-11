@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const app = express();
 app.use(cors());
@@ -15,10 +15,8 @@ app.get('/tablero', (req, res) => {
   res.sendFile(path.join(__dirname, 'Login', 'tablero.html'));
 });
 
-
 // === Redirigir raíz "/" al login ===
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Registro', 'index.html'));
   res.redirect('/login');
 });
 
@@ -39,16 +37,58 @@ app.post('/login', (req, res) => {
       return res.status(500).json({ error: 'read_failed' });
     }
 
-    const lines = data.trim().split('\n');
+    const lines = data.trim().split('\n').filter(Boolean);
+    if (lines.length <= 1) return res.status(401).json({ ok: false, error: 'No users' });
     const [header, ...rows] = lines;
 
-    // Convertir cada línea del archivo CSV en un objeto usuario
+    // simple CSV line parser that supports quoted fields
+    function parseCsvLine(line) {
+      const result = [];
+      let cur = '';
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') {
+          if (inQuotes && line[i + 1] === '"') { cur += '"'; i++; }
+          else inQuotes = !inQuotes;
+        } else if (ch === ',' && !inQuotes) {
+          result.push(cur);
+          cur = '';
+        } else {
+          cur += ch;
+        }
+      }
+      result.push(cur);
+      return result;
+    }
+
+    function normalizeEmail(emailStr) {
+      const e = (emailStr || '').trim().toLowerCase();
+      const parts = e.split('@');
+      if (parts.length !== 2) return e;
+      let [local, domain] = parts;
+      if (domain === 'gmail.com' || domain === 'googlemail.com') {
+        const plus = local.indexOf('+');
+        if (plus !== -1) local = local.substring(0, plus);
+        local = local.replace(/\./g, '');
+      }
+      return `${local}@${domain}`;
+    }
+
     const usuarios = rows.map(line => {
-      const [nombre, emailField, passwordHash] = line.split(',');
-      return { nombre, email: emailField, passwordHash };
+      const parts = parseCsvLine(line);
+      const nombre = parts[0] || '';
+      const emailField = parts[1] || '';
+      const passwordHash = parts[2] || '';
+      const createdAt = parts[3] || '';
+      return { nombre, email: emailField, passwordHash, createdAt };
     });
 
-    const usuario = usuarios.find(u => u.email === email && u.passwordHash === password);
+    const targetCanonical = normalizeEmail(email);
+    // Hash the provided password with SHA-256 to compare with stored hash
+    const providedHash = crypto.createHash('sha256').update(String(password)).digest('hex');
+
+    const usuario = usuarios.find(u => normalizeEmail(u.email) === targetCanonical && u.passwordHash === providedHash);
 
     if (usuario) {
       res.json({ ok: true, nombre: usuario.nombre });
@@ -82,7 +122,7 @@ app.post('/save-users', (req, res) => {
         console.error('Write error', err);
         return res.status(500).json({ error: 'write_failed' });
       }
-      return res.json({ ok: true, path: usuariosPathnmp });
+      return res.json({ ok: true, path: usuariosPath });
     });
   });
 });
