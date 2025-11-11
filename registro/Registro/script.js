@@ -21,6 +21,7 @@ form.addEventListener('submit', async (event) => {
   }
 
   mostrarMensaje(`✅ Usuario "${nombre}" registrado correctamente.`, "green");
+  //redirigir a la página de inicio de sesión después de 2 segundos
   form.reset();
 });
 
